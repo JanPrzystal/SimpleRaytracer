@@ -1,0 +1,3 @@
+[submodule "WindowManager"]
+	path = WindowManager
+	url = https://github.com/JanPrzystal/WindowManager.git
