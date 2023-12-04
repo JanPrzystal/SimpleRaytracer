@@ -1,8 +1,7 @@
 #ifndef RAY_H
 #define RAY_H
 
-#include "math3d/math3d.h"
-
+#include "math3d.h"
 
 class Ray {
   public:
@@ -13,7 +12,7 @@ class Ray {
     Vector3 origin() const  { return orig; }
     Vector3 direction() const { return dir; }
 
-    Vector3 at(NUMBER t) const {
+    Vector3 at(number t) const {
         return (Vector3)orig + (Vector3)dir*t;
     }
 

@@ -6,15 +6,21 @@ set(CMAKE_C++_STANDARD 17)
 project(Raytracer CXX)
 
 add_subdirectory(WindowManager)
+add_subdirectory(Math3D)
+# add_subdirectory(Raytracer)
 link_directories(./dependencies/math3D)
 
 include_directories(
   ./
-  ./dependencies/
+  ./Math3D
   ./WindowManager/window
+  ./Raytracer
 )
 
-add_executable(Raytracer main.cpp)
+add_executable(Raytracer 
+  ./Raytracer/rt_util.cpp  
+  main.cpp
+)
 
 target_link_libraries(Raytracer 
   window
