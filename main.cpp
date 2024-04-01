@@ -26,7 +26,7 @@ int drawImage(){
 }
 
 int main(){
-    camera = new RayCamera((number)image_width/(number)image_height, 0.1, 1000.0, 75.0, image_width, nullptr);
+    camera = new RayCamera((number)image_width/(number)image_height, 0.1, 1000.0, 60.0, image_width, nullptr);
     camera->drawPixel = window_setPixel;
 
     scene = new Scene();

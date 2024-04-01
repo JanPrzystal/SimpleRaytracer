@@ -8,6 +8,7 @@ public:
     int image_width = 256;  // Rendered image width
     void (*drawPixel)(int x, int y, int color);
     int* framebuffer;
+    int samples_per_pixel = 5;
 
     RayCamera(int image_width, int* framebuffer) : Camera() {
         init(image_width, framebuffer);
@@ -26,14 +27,23 @@ public:
             for (int i = 0; i < image_width; ++i) {
                 Point pixel_center = pixel00_loc + (pixel_delta_u * (number)i) + (pixel_delta_v * (number)j);//TODO optimize
                 Vector3 ray_direction = pixel_center - position;
-                Ray r(position, ray_direction);
+                // Ray r(position, ray_direction);
 
-                Color pixel_color = ray_color(r, object);
+                Color pixel_color = Color(0,0,0,0);//ray_color(r, object);
+                Vector3 temp_color = Vector3();
+                for (int sample = 0; sample < samples_per_pixel; ++sample) {
+                    Ray r = get_ray(i, j, pixel_center);
+                    // if(i==j)
+                    //     printf("pixel_color before %d %d %d %d\n", pixel_color.r, pixel_color.g, pixel_color.b, pixel_color.a);
+                    temp_color += ray_color(r, object).toVector();
+                }
+                pixel_color = Color::fromVector(temp_color / samples_per_pixel);
+                // printf("color done %d\n", i);
                 if(drawPixel != nullptr){
                     // printf("pixel color: %X\n", pixel_color.toInt());
-                    drawPixel(i, j, pixel_color.toInt());
+                    drawPixel(i, j, pixel_color.toInt_24());
                 }else if(image != nullptr)
-                    image[buffer_offset + i] = pixel_color.toInt();
+                    image[buffer_offset + i] = pixel_color.toInt_24();
                 else
                     std::cout << "RayCamera: Error: nowhere to draw pixel" << '\n';
             }
@@ -85,7 +95,7 @@ private:
     }
 
     Color ray_color(const Ray& ray, const Hittable& object) const {
-        HitRecord hit;
+        HitRecord hit = HitRecord();
 
         if (object.hit(ray, default_interval, hit)) {
             return Color::fromVector((hit.normal + Vector3(1,1,1)) * 0.5);
@@ -93,13 +103,31 @@ private:
 
         Vector3 unit_direction = Vector3(ray.direction());
         number a = (unit_direction.y + 1.0) * 0.5;
+        // printf("ray dir x: %f\n", ray.direction().x);
 
         //TODO skip float color
         //create color in 0.0-1.0 range
-        Vector3 color = Vector3(1.0, 1.0, 1.0)*(1.0-a) + (Vector3(0.5, 0.7, 1.0)*a);
+        Vector3 color = (Vector3(1.0, 1.0, 1.0)*(1.0-a)) + (Vector3(0.5, 0.7, 1.0)*a);
 
         //convert to int rgba 
         Color real_color = Color::fromVector(color);
         return real_color;
     }
-}
+
+     Ray get_ray(int i, int j, Point pixel_center) const {
+        // Get a randomly sampled camera ray for the pixel at location i,j.
+        auto pixel_sample = pixel_center + pixel_sample_square();
+
+        auto ray_direction = pixel_sample - position;
+
+        return Ray(position, ray_direction);
+    }
+
+    Vector3 pixel_sample_square() const {
+        // Returns a random point in the square surrounding a pixel at the origin.
+        //todo cast
+        number px = -0.5 + random_number();
+        number py = -0.5 + random_number();
+        return (pixel_delta_u * px) + (pixel_delta_v * py);
+    }
+};

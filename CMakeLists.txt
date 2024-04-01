@@ -18,7 +18,6 @@ include_directories(
 )
 
 add_executable(Raytracer 
-  ./Raytracer/rt_util.cpp  
   main.cpp
 )
 
