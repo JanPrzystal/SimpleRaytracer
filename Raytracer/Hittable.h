@@ -3,7 +3,12 @@
 
 #include "Ray.h"
 #include "Interval.h"
+#include <memory>
 // #include "math/Vector3.h"
+
+using std::shared_ptr;
+
+class Material;
 
 class HitRecord {
   public:
@@ -11,6 +16,7 @@ class HitRecord {
     Vector3 normal;
     number t;
     bool front_face;
+    shared_ptr<Material> material;
 
     void set_face_normal(const Ray& ray, const Vector3& outward_normal) {
         // Sets the hit record normal vector.
@@ -27,9 +33,20 @@ class HitRecord {
 
 class Hittable {
   public:
+    Hittable(shared_ptr<Material> _material){
+      material = _material;
+    } 
+
     virtual ~Hittable() = default;
 
     virtual bool hit(const Ray& ray, Interval interval, HitRecord& hit) const = 0;
+
+  protected:
+    shared_ptr<Material> material;
 };
+
+// Hittable::Hittable(shared_ptr<Material> _material) {
+//   this->material = _material;
+// }
 
 #endif

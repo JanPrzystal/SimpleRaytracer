@@ -13,8 +13,8 @@ class Scene : public Hittable {
   public:
     std::vector<shared_ptr<Hittable>> objects;
 
-    Scene() {}
-    Scene(shared_ptr<Hittable> object) { add(object); }
+    Scene() : Hittable(nullptr) {}
+    Scene(shared_ptr<Hittable> object) : Scene() { add(object); }
 
     void clear() { objects.clear(); }
 

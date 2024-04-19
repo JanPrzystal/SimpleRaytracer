@@ -5,7 +5,7 @@
 
 class Plane : public Hittable {
 public:
-    Plane(Vector3 _center, Vector3 _normal) : center(_center), normal(_normal) {}
+    Plane(Vector3 _center, Vector3 _normal, shared_ptr<Material> _material) : Hittable(_material), center(_center), normal(_normal) {}
 
     bool hit(const Ray& ray, Interval interval, HitRecord& hit) const override {
         number denom = normal * ray.direction();
@@ -18,6 +18,7 @@ public:
                 hit.p = ray.at(hit.t);
                 hit.normal = normal;
                 hit.set_face_normal(ray, normal);
+                hit.material = material;
                 return true;
             }
         }

@@ -1,5 +1,6 @@
 #include "math3d.h"
 #include "Hittable.h"
+#include "Material.h"
 #include <iostream>
 
 class RayCamera : public Camera {
@@ -8,7 +9,9 @@ public:
     int image_width = 256;  // Rendered image width
     void (*drawPixel)(int x, int y, int color);
     int* framebuffer;
-    int samples_per_pixel = 5;
+    int samples_per_pixel = 25;
+    int max_depth = 25;
+    number reflectance = 1.0f;
 
     RayCamera(int image_width, int* framebuffer) : Camera() {
         init(image_width, framebuffer);
@@ -35,7 +38,7 @@ public:
                     Ray r = get_ray(i, j, pixel_center);
                     // if(i==j)
                     //     printf("pixel_color before %d %d %d %d\n", pixel_color.r, pixel_color.g, pixel_color.b, pixel_color.a);
-                    temp_color += ray_color(r, object).toVector();
+                    temp_color += ray_color(r, object, max_depth).toVector();
                 }
                 pixel_color = Color::fromVector(temp_color / samples_per_pixel);
                 // printf("color done %d\n", i);
@@ -94,14 +97,26 @@ private:
         printf("pixel_delta_v: %f %f %f\n", pixel_delta_v.x, pixel_delta_v.y, pixel_delta_v.z);
     }
 
-    Color ray_color(const Ray& ray, const Hittable& object) const {
+    Color ray_color(const Ray& ray, const Hittable& object, int depth) const {
+        if(depth < 1){
+            return Color(0,0,0,0);
+        }
+        
         HitRecord hit = HitRecord();
 
         if (object.hit(ray, default_interval, hit)) {
-            return Color::fromVector((hit.normal + Vector3(1,1,1)) * 0.5);
+            Ray scattered;
+            Color attenuation;
+            if (hit.material->scatter(ray, hit, attenuation, scattered))
+                return attenuation * ray_color(scattered, object, depth-1);
+            return Color(0,0,0,0);
+
+            Vector3 direction = hit.normal + Vector3::random_on_hemisphere(hit.normal);
+            return ray_color(Ray(hit.p, direction), object, depth-1) * reflectance;
+            // return Color::fromVector((hit.normal + Vector3(1,1,1)) * 0.5);
         }
 
-        Vector3 unit_direction = Vector3(ray.direction());
+        Vector3 unit_direction = Vector3(ray.direction().normalized());
         number a = (unit_direction.y + 1.0) * 0.5;
         // printf("ray dir x: %f\n", ray.direction().x);
 

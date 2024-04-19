@@ -8,5 +8,6 @@
 #include "rt_util.h"
 #include "RayCamera.h"
 #include "Scene.h"
+#include "Material.h"
 
 #endif
