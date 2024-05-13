@@ -6,8 +6,8 @@
 
 typedef unsigned char byte;
 
-const int image_width = 800;
-const int image_height = 600;
+const int image_width = 480;
+const int image_height = 360;
 const number aspect_ratio = image_width / image_height;
 
 RayCamera *camera = nullptr;
@@ -33,12 +33,13 @@ int drawImage(){
 }
 
 int main(){
-    camera = new RayCamera((number)image_width/(number)image_height, 0.01, 1000.0, 80.0, image_width, nullptr);
+    camera = new RayCamera((number)image_width/(number)image_height, 0.01, 100.0, 80.0, image_width, nullptr);
     camera->drawPixel = window_setPixel;
 
     auto greenMat = std::make_shared<Lambertian>(Lambertian(Color(0x0f, 0xbb, 0x0f, 0xff)));
     auto redMat = std::make_shared<Lambertian>(Lambertian(Color(0xff, 0x0f, 0x0f, 0xff)));
     auto blueMat = std::make_shared<Lambertian>(Lambertian(Color(0x00, 0x00, 0xff, 0xff)));
+    auto whiteMat = std::make_shared<Lambertian>(Lambertian(Color(0xf0, 0xf0, 0xf0, 0xff)));
     auto metalMat = std::make_shared<Metal>(Metal(Color(0xdd, 0xdd, 0xdd, 0xff)));
 
     scene = new Scene();
@@ -46,10 +47,16 @@ int main(){
     auto sphere2 = std::make_shared<Sphere>(Vector3(-0.58f,-0.2f,-0.75f), 0.3, redMat);
     auto sphere3 = std::make_shared<Sphere>(Vector3(1.02f,0.0f,-1.0f), 0.5, blueMat);
     auto plane1 = std::make_shared<Plane>(Vector3(0.0f, -0.5f, 0.0f), Vector3(0.0f,1.0f,0.0f), greenMat);
+    auto planeB = std::make_shared<Plane>(Vector3(0.0f, -0.5f, -2.0f), Vector3(0.0f,0.0f,1.0f), whiteMat);
+    auto planeL = std::make_shared<Plane>(Vector3(-30.0f, -0.5f, 0.0f), Vector3(1.0f,0.2f,-0.3f), whiteMat);
+    auto planeR = std::make_shared<Plane>(Vector3(30.0f, -0.5f, 0.0f), Vector3(-1.0f,0.2f,-0.3f), whiteMat);
     scene->add(sphere1);
     scene->add(sphere2);
     scene->add(sphere3);
     scene->add(plane1);
+    // scene->add(planeB);
+    // scene->add(planeL);
+    // scene->add(planeR);
 
     int rc = window_init(image_width, image_height, "Raytracer", drawImage);
     while(1);

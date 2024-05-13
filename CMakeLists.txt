@@ -8,7 +8,7 @@ project(Raytracer CXX)
 add_subdirectory(WindowManager)
 add_subdirectory(Math3D)
 # add_subdirectory(Raytracer)
-link_directories(./dependencies/math3D)
+# link_directories(./dependencies/math3D)
 
 include_directories(
   ./

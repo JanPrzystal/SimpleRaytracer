@@ -9,8 +9,8 @@ public:
     int image_width = 256;  // Rendered image width
     void (*drawPixel)(int x, int y, int color);
     int* framebuffer;
-    int samples_per_pixel = 25;
-    int max_depth = 25;
+    int samples_per_pixel = 10;
+    int max_depth = 5;
     number reflectance = 1.0f;
 
     RayCamera(int image_width, int* framebuffer) : Camera() {
@@ -22,11 +22,11 @@ public:
     }
 
     void render(const Hittable& object){
-        std::cout << "P3\n" << image_width << ' ' << image_height << "\n255\n";
+        // std::cout << "P3\n" << image_width << ' ' << image_height << "\n255\n";
 
         for (int j = 0; j < image_height; ++j) {
             int buffer_offset = j*image_width;
-            std::clog << "\rScanlines remaining: " << (image_height - j) << ' ' << std::flush;
+            // std::clog << "\rScanlines remaining: " << (image_height - j) << ' ' << std::flush;
             for (int i = 0; i < image_width; ++i) {
                 Point pixel_center = pixel00_loc + (pixel_delta_u * (number)i) + (pixel_delta_v * (number)j);//TODO optimize
                 Vector3 ray_direction = pixel_center - position;
