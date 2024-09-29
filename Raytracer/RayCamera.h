@@ -7,7 +7,7 @@ class RayCamera : public Camera {
 public:
     int image_height;       // Rendered image height
     int image_width = 256;  // Rendered image width
-    void (*drawPixel)(int x, int y, int color);
+    void (*drawPixel)(u16 x, u16 y, int color);
     int* framebuffer;
     int samples_per_pixel = 10;
     int max_depth = 5;

@@ -6,8 +6,8 @@
 
 typedef unsigned char byte;
 
-const int image_width = 480;
-const int image_height = 360;
+u16 image_width = 480;
+u16 image_height = 360;
 const number aspect_ratio = image_width / image_height;
 
 RayCamera *camera = nullptr;
@@ -58,7 +58,7 @@ int main(){
     // scene->add(planeL);
     // scene->add(planeR);
 
-    int rc = window_init(image_width, image_height, "Raytracer", drawImage);
+    int rc = window_init(&image_width, &image_height, "Raytracer", drawImage);
     while(1);
     window_deinit();
 
