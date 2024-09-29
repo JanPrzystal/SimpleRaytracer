@@ -8,7 +8,7 @@ typedef unsigned char byte;
 
 u16 image_width = 480;
 u16 image_height = 360;
-const number aspect_ratio = image_width / image_height;
+number aspect_ratio;
 
 RayCamera *camera = nullptr;
 // int framebuffer[image_width * image_height];
@@ -33,6 +33,9 @@ int drawImage(){
 }
 
 int main(){
+    int rc = window_init(&image_width, &image_height, "Raytracer", drawImage);
+    aspect_ratio = image_width / image_height;
+    
     camera = new RayCamera((number)image_width/(number)image_height, 0.01, 100.0, 80.0, image_width, nullptr);
     camera->drawPixel = window_setPixel;
 
@@ -58,8 +61,8 @@ int main(){
     // scene->add(planeL);
     // scene->add(planeR);
 
-    int rc = window_init(&image_width, &image_height, "Raytracer", drawImage);
-    while(1);
+    drawImage();
+    //while(1);
     window_deinit();
 
     delete camera;

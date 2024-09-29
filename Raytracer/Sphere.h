@@ -1,6 +1,7 @@
 #ifndef SPHERE_H
 #define SPHERE_H
 
+#include <math.h>
 #include "Hittable.h"
 
 class Sphere : public Hittable {
@@ -18,12 +19,12 @@ class Sphere : public Hittable {
             return false;
         } 
 
-        number sqrtd = sqrt(discriminant);
+        number sqrt = sqrtf(discriminant);
 
         // Find the nearest root that lies in the acceptable range.
-        number root = (-half_b - sqrtd) / a;
+        number root = (-half_b - sqrt) / a;
         if (!interval.surrounds(root)) {
-            root = (-half_b + sqrtd) / a;
+            root = (-half_b + sqrt) / a;
             if (!interval.surrounds(root))
                 return false;
         }

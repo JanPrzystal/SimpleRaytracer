@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.18)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C++_STANDARD 17)
 
-project(Raytracer CXX)
+project(SimpleRaytracer CXX)
 
 include_directories(
   ./
@@ -16,16 +16,16 @@ add_subdirectory(WindowManager)
 add_subdirectory(Math3D)
 add_subdirectory(Raytracer)
 
-add_executable(Raytracer 
+add_executable(SimpleRaytracer 
   main.cpp
 )
 
-target_include_directories(Raytracer PUBLIC 
+target_include_directories(SimpleRaytracer PUBLIC 
     ./
     ./Math3D
 )
 
-target_link_libraries(Raytracer 
+target_link_libraries(SimpleRaytracer 
   window
   math3D
 )
