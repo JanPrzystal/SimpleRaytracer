@@ -1,6 +1,6 @@
 #include "window.h"
 #include "math3d.h"
-#include "raytracer/raytracer.h"
+#include "Raytracer/raytracer.h"
 #include <iostream>
 #include <chrono>
 

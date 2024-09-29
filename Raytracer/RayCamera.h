@@ -129,7 +129,7 @@ private:
         return real_color;
     }
 
-     Ray get_ray(int i, int j, Point pixel_center) const {
+    Ray get_ray(int i, int j, Point pixel_center) const {
         // Get a randomly sampled camera ray for the pixel at location i,j.
         auto pixel_sample = pixel_center + pixel_sample_square();
 
