@@ -16,6 +16,8 @@ add_subdirectory(WindowManager)
 add_subdirectory(Math3D)
 add_subdirectory(Raytracer)
 
+find_package(OpenMP REQUIRED)
+
 add_executable(SimpleRaytracer 
   main.cpp
 )
@@ -28,5 +30,6 @@ target_include_directories(SimpleRaytracer PUBLIC
 target_link_libraries(SimpleRaytracer 
   window
   math3D
+  OpenMP::OpenMP_CXX
 )
 

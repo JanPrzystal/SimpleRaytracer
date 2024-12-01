@@ -3,6 +3,7 @@
 #include "Raytracer/raytracer.h"
 #include <iostream>
 #include <chrono>
+#include <omp.h>
 
 typedef unsigned char byte;
 
@@ -16,12 +17,15 @@ Scene *scene = nullptr;
 
 int drawImage(){
 
-    std::cout << "P3\n" << image_width << ' ' << image_height << "\n255\n";
+    std::cout << "P3\n" << image_width << ' ' << image_height << "\n";
 
     // const Vector3 sphere = Vector3(rand()%4-2,rand()%4-2,-(rand()%6+1));
     uint64_t  beforeTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+    std::cout << "render\n";
 
     camera->render(*scene);
+
+    std::cout << "display\n";
 
     window_update(0,0,0,0);
 
@@ -33,9 +37,12 @@ int drawImage(){
 }
 
 int main(){
-    int rc = window_init(&image_width, &image_height, "Raytracer", drawImage);
+    omp_set_num_threads(8);
+    // omp_set_stacksize(256 * 1024 * 1024); // 256 MB
+
+    // int rc = window_init(&image_width, &image_height, "Raytracer", drawImage);
     aspect_ratio = image_width / image_height;
-    
+
     camera = new RayCamera((number)image_width/(number)image_height, 0.01, 100.0, 80.0, image_width, nullptr);
     camera->drawPixel = window_setPixel;
 
@@ -61,9 +68,10 @@ int main(){
     // scene->add(planeL);
     // scene->add(planeR);
 
-    drawImage();
-    //while(1);
-    window_deinit();
+    int rc = window_init(&image_width, &image_height, "Raytracer", drawImage);
+    // drawImage();
+    // while(1);
+    // window_deinit();
 
     delete camera;
     delete scene;

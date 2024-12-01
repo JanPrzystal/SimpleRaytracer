@@ -2,6 +2,7 @@
 #include "Hittable.h"
 #include "Material.h"
 #include <iostream>
+#include <omp.h>
 
 class RayCamera : public Camera {
 public:
@@ -22,33 +23,42 @@ public:
     }
 
     void render(const Hittable& object){
-        // std::cout << "P3\n" << image_width << ' ' << image_height << "\n255\n";
+        std::cout << "\n" << image_width << ' ' << image_height << "\n" << std::flush;
 
-        for (int j = 0; j < image_height; ++j) {
-            int buffer_offset = j*image_width;
-            // std::clog << "\rScanlines remaining: " << (image_height - j) << ' ' << std::flush;
-            for (int i = 0; i < image_width; ++i) {
-                Point pixel_center = pixel00_loc + (pixel_delta_u * (number)i) + (pixel_delta_v * (number)j);//TODO optimize
+        int iw = image_width;
+
+        #pragma omp parallel for
+        for (int y = 0; y < image_height; ++y) {
+            // printf("Thread %d is processing iteration %d\n", omp_get_thread_num(), y);
+
+            int buffer_offset = y*iw;
+            // std::clog << "\rScanlines remaining: " << (image_height - y) << ' ' << std::flush;
+            for (int x = 0; x < iw; ++x) {
+                Point pixel_center = pixel00_loc + (pixel_delta_u * (number)x) + (pixel_delta_v * (number)y);//TODO optimize
                 Vector3 ray_direction = pixel_center - position;
                 // Ray r(position, ray_direction);
 
                 Color pixel_color = Color(0,0,0,0);//ray_color(r, object);
                 Vector3 temp_color = Vector3();
                 for (int sample = 0; sample < samples_per_pixel; ++sample) {
-                    Ray r = get_ray(i, j, pixel_center);
-                    // if(i==j)
+                    Ray r = get_ray(pixel_center);
+                    // if(x==y)
                     //     printf("pixel_color before %d %d %d %d\n", pixel_color.r, pixel_color.g, pixel_color.b, pixel_color.a);
                     temp_color += ray_color(r, object, max_depth).toVector();
                 }
                 pixel_color = Color::fromVector(temp_color / samples_per_pixel);
-                // printf("color done %d\n", i);
+                // printf("color done %d\n", x);
+
+                #pragma omp critical
+                {
                 if(drawPixel != nullptr){
                     // printf("pixel color: %X\n", pixel_color.toInt());
-                    drawPixel(i, j, pixel_color.toInt_24());
-                }else if(image != nullptr)
-                    image[buffer_offset + i] = pixel_color.toInt_24();
+                    drawPixel(x, y, pixel_color.toInt_24());
+                }else if(this->image != nullptr)
+                    image[buffer_offset + x] = pixel_color.toInt_24();
                 else
                     std::cout << "RayCamera: Error: nowhere to draw pixel" << '\n';
+                }
             }
         }
 
@@ -129,8 +139,8 @@ private:
         return real_color;
     }
 
-    Ray get_ray(int i, int j, Point pixel_center) const {
-        // Get a randomly sampled camera ray for the pixel at location i,j.
+    Ray get_ray(Point pixel_center) const {
+        // Get a randomly sampled camera ray for the pixel at location x,y.
         auto pixel_sample = pixel_center + pixel_sample_square();
 
         auto ray_direction = pixel_sample - position;
