@@ -4,11 +4,12 @@
 #include <iostream>
 #include <chrono>
 #include <omp.h>
+#include <unistd.h>
 
 typedef unsigned char byte;
 
-u16 image_width = 480;
-u16 image_height = 360;
+u16 image_width = 800;
+u16 image_height = 600;
 number aspect_ratio;
 
 RayCamera *camera = nullptr;
@@ -27,7 +28,7 @@ int drawImage(){
 
     std::cout << "display\n";
 
-    window_update(0,0,0,0);
+    // window_update(0,0,0,0);
 
     uint64_t  afterTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
     uint64_t dTime = afterTime - beforeTime;
@@ -69,9 +70,14 @@ int main(){
     // scene->add(planeR);
 
     int rc = window_init(&image_width, &image_height, "Raytracer", drawImage);
+    printf("Initialized\n");
     // drawImage();
-    // while(1);
-    // window_deinit();
+    int i=0;
+    while (i<5) {
+        sleep(1);
+        i++;
+    }
+    window_deinit();
 
     delete camera;
     delete scene;
