@@ -8,8 +8,8 @@
 
 typedef unsigned char byte;
 
-u16 image_width = 800;
-u16 image_height = 600;
+u16 image_width = 480;
+u16 image_height = 360;
 number aspect_ratio;
 
 RayCamera *camera = nullptr;
@@ -28,7 +28,7 @@ int drawImage(){
 
     std::cout << "display\n";
 
-    // window_update(0,0,0,0);
+    window_update(0,0,0,0);
 
     uint64_t  afterTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
     uint64_t dTime = afterTime - beforeTime;
@@ -75,6 +75,7 @@ int main(){
     int i=0;
     while (i<5) {
         sleep(1);
+        window_update(0,0,0,0);
         i++;
     }
     window_deinit();
