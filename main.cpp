@@ -8,8 +8,8 @@
 
 typedef unsigned char byte;
 
-u16 image_width = 480;
-u16 image_height = 360;
+u16 image_width = 640;
+u16 image_height = 480;
 number aspect_ratio;
 
 RayCamera *camera = nullptr;
@@ -73,9 +73,10 @@ int main(){
     printf("Initialized\n");
     // drawImage();
     int i=0;
-    while (i<5) {
+    while (i<6) {
         sleep(1);
-        window_update(0,0,0,0);
+        drawImage();
+        // window_update(0,0,0,0);
         i++;
     }
     window_deinit();
